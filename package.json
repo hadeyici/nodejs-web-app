@@ -1,0 +1,22 @@
+{
+  "name": "nodejs-web-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hadeyici/nodejs-web-app.git"
+  },
+  "author": "Hatice Ergün",
+  "bugs": {
+    "url": "https://github.com/hadeyici/nodejs-web-app/issues"
+  },
+  "homepage": "https://github.com/hadeyici/nodejs-web-app#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.2.0"
+  }
+}
