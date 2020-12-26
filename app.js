@@ -1,7 +1,21 @@
 const express = require("express");
 const exphbs = require("express-handlebars");
+const mongoose = require("mongoose");
 
 const app = express();
+
+//Connect to Mongoose
+mongoose
+  .connect("mongodb://localhost/project", {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  })
+  .then(() => console.log("MongoDB connected."))
+  .catch((err) => console.log(err));
+
+// Load Article Model
+require("./models/Article");
+const Article = mongoose.model('articles');
 
 //Handlebars Middleware
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
