@@ -15,7 +15,7 @@ mongoose
 
 // Load Article Model
 require("./models/Article");
-const Article = mongoose.model('articles');
+const Article = mongoose.model("articles");
 
 //Handlebars Middleware
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
@@ -32,8 +32,13 @@ app.get("/about", (req, res) => {
 });
 
 //Article Route
-app.get("/article", (req, res) => {
-  res.render("article");
+app.get("/articles", (req, res) => {
+  res.render("articles/add");
+});
+
+//Add article Form
+app.get("/articles/add", (req, res) => {
+  res.render("articles/add");
 });
 
 //Contact Route
