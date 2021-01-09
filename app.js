@@ -19,7 +19,16 @@ require("./models/Article");
 const Article = mongoose.model("articles");
 
 //Handlebars Middleware
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.engine(
+  "handlebars",
+  exphbs({
+    defaultLayout: "main",
+    runtimeOptions: {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true,
+    },
+  })
+);
 app.set("view engine", "handlebars");
 
 //Body parser Middleware
@@ -38,7 +47,13 @@ app.get("/about", (req, res) => {
 
 //Article Route
 app.get("/articles", (req, res) => {
-  res.render("articles/add");
+  Article.find({})
+    .sort({ date: "desc" })
+    .then((articles) => {
+      res.render("articles/index", {
+        articles: articles,
+      });
+    });
 });
 
 //Add article Form
@@ -68,11 +83,9 @@ app.post("/articles", (req, res) => {
       title: req.body.title,
       details: req.body.details,
     };
-    new Article(newUser)
-    .save()
-    .then(article => {
-      res.redirect('/articles');
-    } )
+    new Article(newUser).save().then((article) => {
+      res.redirect("/articles");
+    });
   }
 });
 
