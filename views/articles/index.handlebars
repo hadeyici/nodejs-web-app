@@ -1,7 +1,8 @@
 {{#each articles}}
 <div class="card card-body mb-2">
-    <h4>{{this.title}}</h4>
-    <p>{{this.details}}</p>
+    <h4>{{title}}</h4>
+    <p>{{details}}</p>
+    <a class="btn btn-dark btn-block" href="/articles/edit/{{id}}">Edit</a>
 </div>
 {{else}}
 <p>No article </p>
