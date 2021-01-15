@@ -3,6 +3,8 @@ const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
+const flash = require("connect-flash");
+const session = require("express-session");
 
 const app = express();
 
@@ -38,6 +40,25 @@ app.use(bodyParser.json());
 
 //Method override Middleware
 app.use(methodOverride("_method"));
+
+// Express session Middleware
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+app.use(flash());
+
+// Global variables
+app.use(function (req, res, next) {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 //Index Route
 app.get("/", (req, res) => {
@@ -99,6 +120,7 @@ app.post("/articles", (req, res) => {
       details: req.body.details,
     };
     new Article(newUser).save().then((article) => {
+      req.flash("success_msg", "Article added");
       res.redirect("/articles");
     });
   }
@@ -113,6 +135,7 @@ app.put("/articles/:id", (req, res) => {
     article.details = req.body.details;
 
     article.save().then((article) => {
+      req.flash("success_msg", "Article updated");
       res.redirect("/articles");
     });
   });
@@ -121,6 +144,7 @@ app.put("/articles/:id", (req, res) => {
 // Delete article
 app.delete("/articles/:id", (req, res) => {
   Article.remove({ _id: req.params.id }).then(() => {
+    req.flash("success_msg", "Article removed");
     res.redirect("/articles");
   });
 });
