@@ -2,6 +2,7 @@ const express = require("express");
 const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const methodOverride = require("method-override");
 
 const app = express();
 
@@ -35,6 +36,9 @@ app.set("view engine", "handlebars");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//Method override Middleware
+app.use(methodOverride("_method"));
+
 //Index Route
 app.get("/", (req, res) => {
   res.render("index");
@@ -59,6 +63,17 @@ app.get("/articles", (req, res) => {
 //Add article Form
 app.get("/articles/add", (req, res) => {
   res.render("articles/add");
+});
+
+//Edit article Form
+app.get("/articles/edit/:id", (req, res) => {
+  Article.findOne({
+    _id: req.params.id,
+  }).then((article) => {
+    res.render("articles/edit", {
+      article: article,
+    });
+  });
 });
 
 //Article Route
@@ -87,6 +102,20 @@ app.post("/articles", (req, res) => {
       res.redirect("/articles");
     });
   }
+});
+
+// Edit Form process
+app.put("/articles/:id", (req, res) => {
+  Article.findOne({
+    _id: req.params.id,
+  }).then((article) => {
+    article.title = req.body.title;
+    article.details = req.body.details;
+
+    article.save().then((article) => {
+      res.redirect("/articles");
+    });
+  });
 });
 
 //Contact Route
