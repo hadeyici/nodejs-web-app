@@ -118,6 +118,13 @@ app.put("/articles/:id", (req, res) => {
   });
 });
 
+// Delete article
+app.delete("/articles/:id", (req, res) => {
+  Article.remove({ _id: req.params.id }).then(() => {
+    res.redirect("/articles");
+  });
+});
+
 //Contact Route
 app.get("/contact", (req, res) => {
   res.render("contact");
