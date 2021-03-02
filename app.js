@@ -8,6 +8,9 @@ const session = require("express-session");
 
 const app = express();
 
+// Load routes
+const articles = require('./routes/articles');
+
 //Connect to Mongoose
 mongoose
   .connect("mongodb://localhost/project", {
@@ -16,10 +19,6 @@ mongoose
   })
   .then(() => console.log("MongoDB connected."))
   .catch((err) => console.log(err));
-
-// Load Article Model
-require("./models/Article");
-const Article = mongoose.model("articles");
 
 //Handlebars Middleware
 app.engine(
@@ -70,89 +69,13 @@ app.get("/about", (req, res) => {
   res.render("about");
 });
 
-//Article Route
-app.get("/articles", (req, res) => {
-  Article.find({})
-    .sort({ date: "desc" })
-    .then((articles) => {
-      res.render("articles/index", {
-        articles: articles,
-      });
-    });
-});
-
-//Add article Form
-app.get("/articles/add", (req, res) => {
-  res.render("articles/add");
-});
-
-//Edit article Form
-app.get("/articles/edit/:id", (req, res) => {
-  Article.findOne({
-    _id: req.params.id,
-  }).then((article) => {
-    res.render("articles/edit", {
-      article: article,
-    });
-  });
-});
-
-//Article Route
-app.post("/articles", (req, res) => {
-  let errors = [];
-
-  if (!req.body.title) {
-    errors.push({ text: "title is required" });
-  }
-  if (!req.body.details) {
-    errors.push({ text: "detail is required" });
-  }
-
-  if (errors.length > 0) {
-    res.render("/articles/add", {
-      errors: errors,
-      title: req.body.title,
-      details: req.body.details,
-    });
-  } else {
-    const newUser = {
-      title: req.body.title,
-      details: req.body.details,
-    };
-    new Article(newUser).save().then((article) => {
-      req.flash("success_msg", "Article added");
-      res.redirect("/articles");
-    });
-  }
-});
-
-// Edit Form process
-app.put("/articles/:id", (req, res) => {
-  Article.findOne({
-    _id: req.params.id,
-  }).then((article) => {
-    article.title = req.body.title;
-    article.details = req.body.details;
-
-    article.save().then((article) => {
-      req.flash("success_msg", "Article updated");
-      res.redirect("/articles");
-    });
-  });
-});
-
-// Delete article
-app.delete("/articles/:id", (req, res) => {
-  Article.remove({ _id: req.params.id }).then(() => {
-    req.flash("success_msg", "Article removed");
-    res.redirect("/articles");
-  });
-});
-
 //Contact Route
 app.get("/contact", (req, res) => {
   res.render("contact");
 });
+
+// Use routes
+app.use('/articles', articles);
 
 const port = 5000;
 
