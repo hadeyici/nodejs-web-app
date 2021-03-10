@@ -51,11 +51,11 @@ router.get("/", (req, res) => {
         details: req.body.details,
       });
     } else {
-      const newUser = {
+      const newArticle = {
         title: req.body.title,
         details: req.body.details,
       };
-      new Article(newUser).save().then((article) => {
+      new Article(newArticle).save().then((article) => {
         req.flash("success_msg", "Article added");
         res.redirect("/articles");
       });
