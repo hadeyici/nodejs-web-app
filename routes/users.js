@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
 const router = express.Router();
 
 // Load User Model
@@ -63,6 +64,15 @@ router.post('/register', (req, res) => {
             }
         })
     }
+});
+
+// Login Form POST
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/articles',
+        failureRedirect: '/users/login',
+        failureFlash: true
+    })(req, res, next);
 });
 
 module.exports = router;

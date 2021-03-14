@@ -30,6 +30,7 @@
                         <a class="nav-link" href="/contact">Contact</a>
                     </li>
                 </ul>
+                {{#if user}}
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a href="" class="nav-link dropdown-toogle" data-toggle="dropdown"
@@ -40,6 +41,7 @@
                         </div>
                     </li>
                 </ul>
+                {{else}}
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/users/login">Login</a>
@@ -48,6 +50,7 @@
                         <a class="nav-link" href="/users/register">Register</a>
                     </li>
                 </ul>
+                {{/if}}
             </div>
         </div>
     </nav>
