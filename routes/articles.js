@@ -9,7 +9,7 @@ const Article = mongoose.model("articles");
 
 //Article Route
 router.get("/", ensureAuthenticated, (req, res) => {
-    Article.find({})
+    Article.find({user: req.user.id})
       .sort({ date: "desc" })
       .then((articles) => {
         res.render("articles/index", {
@@ -28,9 +28,14 @@ router.get("/", ensureAuthenticated, (req, res) => {
     Article.findOne({
       _id: req.params.id,
     }).then((article) => {
-      res.render("articles/edit", {
-        article: article,
-      });
+      if (article.user != req.user.id) {
+        req.flash('error_msg', 'Not Authorized');
+        res.redirect('/articles');
+      } else {
+        res.render("articles/edit", {
+          article: article,
+        });
+      }
     });
   });
   
@@ -55,6 +60,7 @@ router.get("/", ensureAuthenticated, (req, res) => {
       const newArticle = {
         title: req.body.title,
         details: req.body.details,
+        user: req.user.id
       };
       new Article(newArticle).save().then((article) => {
         req.flash("success_msg", "Article added");
