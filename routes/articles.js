@@ -1,13 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
+const {ensureAuthenticated} = require('../helpers/auth');
 
 // Load Article Model
 require("../models/Article");
 const Article = mongoose.model("articles");
 
 //Article Route
-router.get("/", (req, res) => {
+router.get("/", ensureAuthenticated, (req, res) => {
     Article.find({})
       .sort({ date: "desc" })
       .then((articles) => {
@@ -18,12 +19,12 @@ router.get("/", (req, res) => {
   });
   
   //Add article Form
-  router.get("/add", (req, res) => {
+  router.get("/add", ensureAuthenticated, (req, res) => {
     res.render("articles/add");
   });
   
   //Edit article Form
-  router.get("/edit/:id", (req, res) => {
+  router.get("/edit/:id", ensureAuthenticated, (req, res) => {
     Article.findOne({
       _id: req.params.id,
     }).then((article) => {
@@ -34,7 +35,7 @@ router.get("/", (req, res) => {
   });
   
   //Article Route
-  router.post("/", (req, res) => {
+  router.post("/", ensureAuthenticated, (req, res) => {
     let errors = [];
   
     if (!req.body.title) {
@@ -63,7 +64,7 @@ router.get("/", (req, res) => {
   });
   
   // Edit Form process
-  router.put("/:id", (req, res) => {
+  router.put("/:id", ensureAuthenticated, (req, res) => {
     Article.findOne({
       _id: req.params.id,
     }).then((article) => {
@@ -78,7 +79,7 @@ router.get("/", (req, res) => {
   });
   
   // Delete article
-  router.delete("/:id", (req, res) => {
+  router.delete("/:id", ensureAuthenticated, (req, res) => {
     Article.remove({ _id: req.params.id }).then(() => {
       req.flash("success_msg", "Article removed");
       res.redirect("/articles");
